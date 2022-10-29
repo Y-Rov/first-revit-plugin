@@ -7,7 +7,7 @@ namespace Lab1PlaceGroup
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
-    public class Class1 : IExternalCommand
+    public class Executor : IExternalCommand
     {
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
