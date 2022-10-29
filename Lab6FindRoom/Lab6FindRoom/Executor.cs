@@ -64,6 +64,9 @@ namespace Lab6FindRoom
             return Result.Succeeded;
         }
 
+        /// <summary>
+        /// Return an element's center point coordinates.
+        /// </summary>
         public XYZ GetElementCenter(Element elem)
         {
             BoundingBoxXYZ bounding = elem.get_BoundingBox(null);
