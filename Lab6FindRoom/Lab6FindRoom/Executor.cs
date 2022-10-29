@@ -1,10 +1,10 @@
-﻿using System;
-using Autodesk.Revit.Attributes;
+﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using System;
 
-namespace Lab5PickFilter
+namespace Lab6FindRoom
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
@@ -27,12 +27,15 @@ namespace Lab5PickFilter
                 Element elem = doc.GetElement(pickedRef);
                 Group group = elem as Group;
 
+                // Get the group's center point
+                XYZ origin = GetElementCenter(group);
+
                 // Pick a point
                 XYZ point = sel.PickPoint("Please pick a point to place group");
 
                 // Place the group
                 Transaction trans = new Transaction(doc);
-                trans.Start("Lab5");
+                trans.Start("Lab6");
                 doc.Create.PlaceGroup(point, group.GroupType);
                 trans.Commit();
             }
@@ -47,6 +50,13 @@ namespace Lab5PickFilter
             }
 
             return Result.Succeeded;
+        }
+
+        public XYZ GetElementCenter(Element elem)
+        {
+            BoundingBoxXYZ bounding = elem.get_BoundingBox(null);
+            XYZ center = (bounding.Min + bounding.Max) / 2;
+            return center;
         }
 
         // Filter to constrain picking to model groups. Only model groups
