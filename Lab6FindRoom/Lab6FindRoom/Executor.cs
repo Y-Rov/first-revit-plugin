@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using System;
@@ -30,6 +31,9 @@ namespace Lab6FindRoom
                 // Get the group's center point
                 XYZ origin = GetElementCenter(group);
 
+                // Get the room that the picked group is located in
+                Room room = GetRoomOfGroup(doc, origin);
+
                 // Pick a point
                 XYZ point = sel.PickPoint("Please pick a point to place group");
 
@@ -57,6 +61,27 @@ namespace Lab6FindRoom
             BoundingBoxXYZ bounding = elem.get_BoundingBox(null);
             XYZ center = (bounding.Min + bounding.Max) / 2;
             return center;
+        }
+
+        // Return the room in which the given point is located
+        Room GetRoomOfGroup(Document doc, XYZ point)
+        {
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector.OfCategory(BuiltInCategory.OST_Rooms);
+            Room room = null;
+            foreach (Element elem in collector)
+            {
+                room = elem as Room;
+                if (room != null)
+                {
+                    if (room.IsPointInRoom(point))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return room;
         }
 
         // Filter to constrain picking to model groups. Only model groups
