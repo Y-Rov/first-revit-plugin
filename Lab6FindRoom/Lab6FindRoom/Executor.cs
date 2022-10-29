@@ -34,13 +34,21 @@ namespace Lab6FindRoom
                 // Get the room that the picked group is located in
                 Room room = GetRoomOfGroup(doc, origin);
 
-                // Pick a point
-                XYZ point = sel.PickPoint("Please pick a point to place group");
+                // Get the room's center point
+                XYZ sourceCenter = GetRoomCenter(room);
+                string coords =
+                    "X = " + sourceCenter.X.ToString() + "\r\n" +
+                    "Y = " + sourceCenter.Y.ToString() + "\r\n" +
+                    "Z = " + sourceCenter.Z.ToString();
+
+                TaskDialog.Show("Source room Center", coords);
 
                 // Place the group
                 Transaction trans = new Transaction(doc);
                 trans.Start("Lab6");
-                doc.Create.PlaceGroup(point, group.GroupType);
+                // Calculate the new group's position
+                XYZ groupLocation = sourceCenter + new XYZ(20, 0, 0);
+                doc.Create.PlaceGroup(groupLocation, group.GroupType);
                 trans.Commit();
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
@@ -63,7 +71,9 @@ namespace Lab6FindRoom
             return center;
         }
 
-        // Return the room in which the given point is located
+        /// <summary>
+        /// Return the room in which the given point is located
+        /// </summary>
         Room GetRoomOfGroup(Document doc, XYZ point)
         {
             FilteredElementCollector collector = new FilteredElementCollector(doc);
@@ -84,8 +94,23 @@ namespace Lab6FindRoom
             return room;
         }
 
-        // Filter to constrain picking to model groups. Only model groups
-        // are highlighted and can be selected when cursor is hovering.
+        /// <summary>
+        /// Return a room's center point coordinates.
+        /// Z value is equal to the bottom of the room.
+        /// </summary>
+        public XYZ GetRoomCenter(Room room)
+        {
+            // Get the room center point
+            XYZ boundCenter = GetElementCenter(room);
+            LocationPoint locPoint = (LocationPoint)room.Location;
+            XYZ roomCenter = new XYZ(boundCenter.X, boundCenter.Y, locPoint.Point.Z);
+            return roomCenter;
+        }
+
+        /// <summary>
+        /// Filter to constrain picking to model groups. Only model groups
+        /// are highlighted and can be selected when cursor is hovering.
+        /// </summary>
         public class GroupPickFilter : ISelectionFilter
         {
             public bool AllowElement(Element elem)
