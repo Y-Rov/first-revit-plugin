@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+ <AddIn Type="Command">
+       <Name>Lab7SelectedRoomsAndPlaceGroups</Name>
+       <FullClassName>Lab7SelectedRoomsAndPlaceGroups.Executor</FullClassName>
+       <Text>Lab7SelectedRoomsAndPlaceGroups</Text>
+       <Description>Places the Group in each of the selected rooms</Description>
+       <VisibilityMode>AlwaysVisible</VisibilityMode>
+       <Assembly>D:\Maun_Folder\AMC\RevitAPI\Lab7SelectedRoomsAndPlaceGroups\Lab7SelectedRoomsAndPlaceGroups\bin\Debug\Lab7SelectedRoomsAndPlaceGroups.dll</Assembly>
+       <AddInId>90875607-c2ea-41ee-9675-a61232cae721</AddInId>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, Inc, www.autodesk.com</VendorDescription>
+ </AddIn>
+</RevitAddIns>

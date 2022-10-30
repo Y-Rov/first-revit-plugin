@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+ <AddIn Type="Command">
+       <Name>Lab1PlaceGroup</Name>
+       <FullClassName>Lab1PlaceGroup.Executor</FullClassName>
+       <Text>Lab1PlaceGroup</Text>
+       <Description>Places the Group at Particular Point (with unhandled exceptions)</Description>
+       <VisibilityMode>AlwaysVisible</VisibilityMode>
+       <Assembly>D:\Maun_Folder\AMC\RevitAPI\Lab1PlaceGroup\Lab1PlaceGroup\bin\Debug\Lab1PlaceGroup.dll</Assembly>
+       <AddInId>f114ae16-174c-41e8-ab60-9b1f51810cdc</AddInId>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, Inc, www.autodesk.com</VendorDescription>
+ </AddIn>
+</RevitAddIns>
