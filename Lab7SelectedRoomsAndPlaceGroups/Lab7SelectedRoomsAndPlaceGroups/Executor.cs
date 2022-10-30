@@ -4,8 +4,10 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
-namespace Lab6FindRoom
+namespace Lab7SelectedRoomsAndPlaceGroups
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
@@ -36,12 +38,12 @@ namespace Lab6FindRoom
 
                 // Get the room's center point
                 XYZ sourceCenter = GetRoomCenter(room);
-                string coords =
-                    "X = " + sourceCenter.X.ToString() + "\r\n" +
-                    "Y = " + sourceCenter.Y.ToString() + "\r\n" +
-                    "Z = " + sourceCenter.Z.ToString();
 
-                TaskDialog.Show("Source room Center", coords);
+                // Ask the user to pick target rooms
+                RoomPickFilter roomPickFilter = new RoomPickFilter();
+                IList<Reference> rooms = sel.PickObjects(ObjectType.Element, roomPickFilter,
+                    "Select target rooms for duplicate furniture group");
+
 
                 // Place the group
                 Transaction trans = new Transaction(doc);
@@ -117,6 +119,21 @@ namespace Lab6FindRoom
             public bool AllowElement(Element elem)
             {
                 return elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_IOSModelGroups);
+            }
+
+            public bool AllowReference(Reference reference, XYZ position)
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// Filter to constrain picking to rooms
+        /// </summary>
+        public class RoomPickFilter : ISelectionFilter
+        {
+            public bool AllowElement(Element elem)
+            {
+                return elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms);
             }
 
             public bool AllowReference(Reference reference, XYZ position)

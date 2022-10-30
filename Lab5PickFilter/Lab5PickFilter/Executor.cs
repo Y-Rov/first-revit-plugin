@@ -22,6 +22,7 @@ namespace Lab5PickFilter
 
                 // Pick a group
                 Selection sel = uiApp.ActiveUIDocument.Selection;
+
                 GroupPickFilter selFilter = new GroupPickFilter();
                 pickedRef = sel.PickObject(ObjectType.Element, selFilter, "Please select a group");
                 Element elem = doc.GetElement(pickedRef);
@@ -36,6 +37,7 @@ namespace Lab5PickFilter
                 doc.Create.PlaceGroup(point, group.GroupType);
                 trans.Commit();
             }
+            // If the user right-clicks or presses Esc, handle the exception
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
                 return Result.Cancelled;
@@ -49,8 +51,10 @@ namespace Lab5PickFilter
             return Result.Succeeded;
         }
 
-        // Filter to constrain picking to model groups. Only model groups
-        // are highlighted and can be selected when cursor is hovering.
+        /// <summary>
+        /// Filter to constrain picking to model groups. Only model groups
+        /// are highlighted and can be selected when cursor is hovering.
+        /// </summary>
         public class GroupPickFilter : ISelectionFilter
         {
             public bool AllowElement(Element elem)
