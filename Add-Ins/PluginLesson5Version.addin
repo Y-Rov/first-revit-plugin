@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+ <AddIn Type="Command">
+       <Name>Lab5PickFilter</Name>
+       <FullClassName>Lab5PickFilter.Executor</FullClassName>
+       <Text>Lab5PickFilter</Text>
+       <Description>Places the Group at Particular Point (with handled exceptions)</Description>
+       <VisibilityMode>AlwaysVisible</VisibilityMode>
+       <Assembly>D:\Maun_Folder\AMC\RevitAPI\Lab5PickFilter\Lab5PickFilter\bin\Debug\Lab5PickFilter.dll</Assembly>
+       <AddInId>cdfe7afd-d68e-4d61-89d9-1d62817c3a8b</AddInId>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, Inc, www.autodesk.com</VendorDescription>
+ </AddIn>
+</RevitAddIns>

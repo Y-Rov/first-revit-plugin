@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+ <AddIn Type="Command">
+       <Name>Lab6FindRoom</Name>
+       <FullClassName>Lab6FindRoom.Executor</FullClassName>
+       <Text>Lab6FindRoom</Text>
+       <Description>Places the Group in the next right Room</Description>
+       <VisibilityMode>AlwaysVisible</VisibilityMode>
+       <Assembly>D:\Maun_Folder\AMC\RevitAPI\Lab6FindRoom\Lab6FindRoom\bin\Debug\Lab6FindRoom.dll</Assembly>
+       <AddInId>8e68c43d-11a9-453d-b434-c937c3bffd53</AddInId>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Autodesk, Inc, www.autodesk.com</VendorDescription>
+ </AddIn>
+</RevitAddIns>

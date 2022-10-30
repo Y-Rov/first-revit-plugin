@@ -4,8 +4,9 @@ using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using System;
+using System.Collections.Generic;
 
-namespace Lab6FindRoom
+namespace Lab7SelectedRoomsAndPlaceGroups
 {
     [Transaction(TransactionMode.Manual)]
     [Regeneration(RegenerationOption.Manual)]
@@ -36,20 +37,16 @@ namespace Lab6FindRoom
 
                 // Get the room's center point
                 XYZ sourceCenter = GetRoomCenter(room);
-                string coords =
-                    "X = " + sourceCenter.X.ToString() + "\r\n" +
-                    "Y = " + sourceCenter.Y.ToString() + "\r\n" +
-                    "Z = " + sourceCenter.Z.ToString();
 
-                TaskDialog.Show("Source room Center", coords);
+                // Ask the user to pick target rooms
+                RoomPickFilter roomPickFilter = new RoomPickFilter();
+                IList<Reference> rooms = sel.PickObjects(ObjectType.Element, roomPickFilter,
+                    "Select target rooms for duplicate furniture group");
 
-                // Place the group
+                // Place furniture in each of the rooms
                 Transaction trans = new Transaction(doc);
-                trans.Start("Lab6");
-
-                // Calculate the new group's position
-                XYZ groupLocation = sourceCenter + new XYZ(20, 0, 0);
-                doc.Create.PlaceGroup(groupLocation, group.GroupType);
+                trans.Start("Lab7");
+                PlaceFurnitureInRooms(doc, rooms, sourceCenter, group.GroupType, origin);
                 trans.Commit();
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
@@ -109,6 +106,27 @@ namespace Lab6FindRoom
         }
 
         /// <summary>
+        /// Copy the group to each of the provided rooms. The position
+        /// at which the group should be placed is based on the target
+        /// room's center point: it should have the same offset from
+        /// this point as the original had from the center of its room
+        /// </summary>
+        public void PlaceFurnitureInRooms(Document doc, IList<Reference> rooms, XYZ sourceCenter, GroupType gt,
+            XYZ groupOrigin)
+        {
+            XYZ offset = groupOrigin - sourceCenter;
+            XYZ offsetXY = new XYZ(offset.X, offset.Y, 0);
+            foreach (Reference r in rooms)
+            {
+                if (doc.GetElement(r) is Room roomTarget)
+                {
+                    XYZ roomCenter = GetRoomCenter(roomTarget);
+                    doc.Create.PlaceGroup(roomCenter + offsetXY, gt);
+                }
+            }
+        }
+
+        /// <summary>
         /// Filter to constrain picking to model groups. Only model groups
         /// are highlighted and can be selected when cursor is hovering.
         /// </summary>
@@ -117,6 +135,21 @@ namespace Lab6FindRoom
             public bool AllowElement(Element elem)
             {
                 return elem.Category != null && elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_IOSModelGroups);
+            }
+
+            public bool AllowReference(Reference reference, XYZ position)
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// Filter to constrain picking to rooms
+        /// </summary>
+        public class RoomPickFilter : ISelectionFilter
+        {
+            public bool AllowElement(Element elem)
+            {
+                return elem.Category != null && elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms);
             }
 
             public bool AllowReference(Reference reference, XYZ position)
