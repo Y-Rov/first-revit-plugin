@@ -59,7 +59,7 @@ namespace Lab5PickFilter
         {
             public bool AllowElement(Element elem)
             {
-                return elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_IOSModelGroups);
+                return elem.Category != null && elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_IOSModelGroups);
             }
 
             public bool AllowReference(Reference reference, XYZ position)

@@ -45,7 +45,7 @@ namespace Lab7SelectedRoomsAndPlaceGroups
 
                 // Place furniture in each of the rooms
                 Transaction trans = new Transaction(doc);
-                trans.Start("Lab6");
+                trans.Start("Lab7");
                 PlaceFurnitureInRooms(doc, rooms, sourceCenter, group.GroupType, origin);
                 trans.Commit();
             }
@@ -118,11 +118,10 @@ namespace Lab7SelectedRoomsAndPlaceGroups
             XYZ offsetXY = new XYZ(offset.X, offset.Y, 0);
             foreach (Reference r in rooms)
             {
-                Room roomTarget = doc.GetElement(r) as Room;
-                if (roomTarget != null)
+                if (doc.GetElement(r) is Room roomTarget)
                 {
                     XYZ roomCenter = GetRoomCenter(roomTarget);
-                    Group group = doc.Create.PlaceGroup(roomCenter + offsetXY, gt);
+                    doc.Create.PlaceGroup(roomCenter + offsetXY, gt);
                 }
             }
         }
@@ -135,7 +134,7 @@ namespace Lab7SelectedRoomsAndPlaceGroups
         {
             public bool AllowElement(Element elem)
             {
-                return elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_IOSModelGroups);
+                return elem.Category != null && elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_IOSModelGroups);
             }
 
             public bool AllowReference(Reference reference, XYZ position)
@@ -150,7 +149,7 @@ namespace Lab7SelectedRoomsAndPlaceGroups
         {
             public bool AllowElement(Element elem)
             {
-                return elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms);
+                return elem.Category != null && elem.Category.Id.IntegerValue.Equals((int)BuiltInCategory.OST_Rooms);
             }
 
             public bool AllowReference(Reference reference, XYZ position)
