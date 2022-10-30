@@ -44,14 +44,10 @@ namespace Lab7SelectedRoomsAndPlaceGroups
                 IList<Reference> rooms = sel.PickObjects(ObjectType.Element, roomPickFilter,
                     "Select target rooms for duplicate furniture group");
 
-
-                // Place the group
+                // Place furniture in each of the rooms
                 Transaction trans = new Transaction(doc);
                 trans.Start("Lab6");
-
-                // Calculate the new group's position
-                XYZ groupLocation = sourceCenter + new XYZ(20, 0, 0);
-                doc.Create.PlaceGroup(groupLocation, group.GroupType);
+                PlaceFurnitureInRooms(doc, rooms, sourceCenter, group.GroupType, origin);
                 trans.Commit();
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
@@ -108,6 +104,28 @@ namespace Lab7SelectedRoomsAndPlaceGroups
             LocationPoint locPoint = (LocationPoint)room.Location;
             XYZ roomCenter = new XYZ(boundCenter.X, boundCenter.Y, locPoint.Point.Z);
             return roomCenter;
+        }
+
+        /// <summary>
+        /// Copy the group to each of the provided rooms. The position
+        /// at which the group should be placed is based on the target
+        /// room's center point: it should have the same offset from
+        /// this point as the original had from the center of its room
+        /// </summary>
+        public void PlaceFurnitureInRooms(Document doc, IList<Reference> rooms, XYZ sourceCenter, GroupType gt,
+            XYZ groupOrigin)
+        {
+            XYZ offset = groupOrigin - sourceCenter;
+            XYZ offsetXY = new XYZ(offset.X, offset.Y, 0);
+            foreach (Reference r in rooms)
+            {
+                Room roomTarget = doc.GetElement(r) as Room;
+                if (roomTarget != null)
+                {
+                    XYZ roomCenter = GetRoomCenter(roomTarget);
+                    Group group = doc.Create.PlaceGroup(roomCenter + offsetXY, gt);
+                }
+            }
         }
 
         /// <summary>
